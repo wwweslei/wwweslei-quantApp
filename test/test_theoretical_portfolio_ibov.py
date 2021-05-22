@@ -1,15 +1,15 @@
 import unittest
 
-from quantApp.ext.theoretical_portfolio_ibov import firefox, URL
+from quantApp.ext.theoretical_portfolio_ibov import Theoretical_portfolio_ibov
 
 
 class test_portfolio_ibov(unittest.TestCase):
     def setUp(self):
-        self.firefox = firefox
+        self.ibov = Theoretical_portfolio_ibov()
+        self.df = self.ibov.scrapy()
 
     def tearDown(self):
-        self.firefox.quit()
+        pass
+        
 
-    def test_title_indices(self):
-        self.assertEqual(firefox.title, "Índices", f"page Error title= {firefox.title}")
-
+        

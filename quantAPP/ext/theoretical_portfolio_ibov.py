@@ -3,31 +3,36 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from sqlalchemy import create_engine
+
 import pandas as pd
-import time
+from time import sleep
 
 
-URL = "https://sistemaswebb3-listados.b3.com.br/indexPage/day/IBOV?language=pt-br"
+class Theoretical_portfolio_ibov():
+    def __init__(self):
+        self.TIME_TO_LOAD_THE_TABLE_INTO_THE_DOM = 9
+        self.URL = "https://sistemaswebb3-listados.b3.com.br/indexPage/day/IBOV?language=pt-br"
+        self.engine = create_engine("sqlite:///banco.db", echo=True)
+        self.firefox = webdriver.Firefox()
+        self.firefox.get(self.URL)
 
-firefox = webdriver.Firefox()
-firefox.get(URL)
+    def get_portfolio_ibov(self):
+        for _cont_number_repeat in range(3):
+            WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.ID, "selectPage"))).send_keys(Keys.ARROW_DOWN)
+        sleep(self.TIME_TO_LOAD_THE_TABLE_INTO_THE_DOM)
+        table = self.firefox.find_element_by_class_name('table').get_attribute("outerHTML")
+        self.firefox.quit()
+        df = pd.read_html(table)[0]
+        df.drop(df.tail(2).index, inplace=True)
+        return df
+
+    def save(self):
+        df = self.get_portfolio_ibov()
+        df.to_sql("Index_ibov", con=self.engine, if_exists="replace", index=False)
+        
 
 
-def wait_while_Finding(seletor, name):
-    return WebDriverWait(firefox, 10).until(
-        EC.presence_of_element_located((seletor, name))
-    )
-
-
-wait_while_Finding(By.ID, "segment").send_keys("Setor de Atuação")
-wait_while_Finding(By.ID, "selectPage").send_keys(Keys.ARROW_DOWN)
-wait_while_Finding(By.ID, "selectPage").send_keys(Keys.ARROW_DOWN)
-wait_while_Finding(By.ID, "selectPage").send_keys(Keys.ARROW_DOWN)
-time.sleep(9)
-table = wait_while_Finding(By.CLASS_NAME, "table").get_attribute('outerHTML')
-df = pd.read_html(table)[0]
-df.drop(df.tail(2).index, inplace=True)
-df.columns = ['Setor', 'Código', 'Ação', 'Tipo',
-              'Qtde. Teórica', 'Part. (%)', 'Part. (%)Acum']
-
-print(df)
+if __name__ == "__main__":
+    ibov = Theoretical_portfolio_ibov()
+    ibov.save()
