@@ -10,7 +10,6 @@ class test_portfolio_ibov(unittest.TestCase):
         code_cvm = CodeCvm()
         cls.df_update = code_cvm.get_table()
 
-
     def setUp(self):
         self.engine = create_engine("sqlite:///banco.db")
         self.df = pd.read_sql("select * from Code_cvm", self.engine)

@@ -12,8 +12,7 @@ class test_portfolio_ibov(unittest.TestCase):
 
     def setUp(self):
         self.engine = create_engine("sqlite:///banco.db")
-        self.df = pd.read_sql(
-            "select * from investorParticipation", self.engine)
+        self.df = pd.read_sql("select * from investorParticipation", self.engine)
 
     def test_type_investor_in_investor(self):
         a = self.df["Tipo de Investidores"]
