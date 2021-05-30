@@ -15,7 +15,7 @@ class BuscaEmpresaListada():
         self.firefox = webdriver.Firefox()
         self.firefox.get(self.__URL)
 
-    def get_empresa_listada(self):
+    def get_table(self):
         WebDriverWait(self.firefox, 10).until(
             EC.presence_of_element_located((By.ID, self.ID_BUTTON))).click()
 
@@ -25,8 +25,8 @@ class BuscaEmpresaListada():
         return pd.read_html(table)[0]
 
     def save(self):
-        df = self.get_empresa_listada()
-        df.to_sql("Index", con=self.engine,
+        df = self.get_table()
+        df.to_sql("empresas", con=self.engine,
                   if_exists="replace", index=False)
 
 if __name__ == '__main__':

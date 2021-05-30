@@ -11,13 +11,13 @@ from time import sleep
 
 class Theoretical_portfolio_ibov():
     def __init__(self):
-        self.TIME_TO_LOAD_THE_TABLE_INTO_THE_DOM = 9
+        self.TIME_TO_LOAD_THE_TABLE_INTO_THE_DOM = 2
         self.URL = "https://sistemaswebb3-listados.b3.com.br/indexPage/day/IBOV?language=pt-br"
         self.engine = create_engine("sqlite:///banco.db", echo=True)
         self.firefox = webdriver.Firefox()
         self.firefox.get(self.URL)
 
-    def get_portfolio_ibov(self):
+    def get_table(self):
         for _cont_number_repeat in range(3):
             WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.ID, "selectPage"))).send_keys(Keys.ARROW_DOWN)
         sleep(self.TIME_TO_LOAD_THE_TABLE_INTO_THE_DOM)
@@ -28,7 +28,7 @@ class Theoretical_portfolio_ibov():
         return df
 
     def save(self):
-        df = self.get_portfolio_ibov()
+        df = self.get_table()
         df.to_sql("Index_ibov", con=self.engine, if_exists="replace", index=False)
         
 

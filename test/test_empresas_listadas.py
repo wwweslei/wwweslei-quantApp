@@ -2,31 +2,33 @@ import unittest
 import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from quantAPP.ext.theoretical_portfolio_ibov import Theoretical_portfolio_ibov
+from quantAPP.ext.empresas_listadas_ibov import BuscaEmpresaListada
 
 
 class test_portfolio_ibov(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        ibov = Theoretical_portfolio_ibov()
-        cls.df_update = ibov.get_table()
+        empresas = BuscaEmpresaListada()
+        cls.df_update = empresas.get_table()
 
     def setUp(self):
         self.engine = create_engine("sqlite:///banco.db")
-        self.df = pd.read_sql("select * from Index_ibov", self.engine)
+        self.df = pd.read_sql("select * from empresas", self.engine)
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
-        self.table = self.session.execute("select * from Index_ibov")
+        self.table = self.session.execute("select * from empresas")
 
     def tearDown(self):
         self.session.close()
 
-    def test_ambev_in_ibov(self):
-        a = self.df["Ação"]
-        self.assertEqual(a[0], "AMBEV S/A")
+    def test_3r_Petroleum_in_empresas(self):
+        self.assertEqual(self.df["Razão Social"][0], "3R PETROLEUM ÓLEO E GÁS S.A")
 
-    def test_len_column(self):
-        self.assertTrue(len(self.df) > 80)
+    def test_min_len_column(self):
+        self.assertTrue(len(self.df) > 400)
+
+    def test_max_len_column(self):
+        self.assertTrue(len(self.df) < 500)
 
     def test_equal_df_and_db(self):
         self.assertEqual(len(self.df), len([x for x in self.table]))

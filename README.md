@@ -1,2 +1,2 @@
-# wwweslei-quantApp
+# quantApp
 Financial asset management application.
