@@ -14,11 +14,7 @@ class InvestorParticipation:
         self.firefox.get(self.URL)
 
     def get_table(self):
-        table = (
-            WebDriverWait(self.firefox, 10)
-            .until(EC.presence_of_element_located((By.TAG_NAME, "table")))
-            .get_attribute("outerHTML")
-        )
+        table = WebDriverWait(self.firefox, 10).until(EC.presence_of_element_located((By.TAG_NAME, "table"))).get_attribute("outerHTML")
         self.firefox.quit()
         df = pd.read_html(table)[0]
         df.columns = [
@@ -32,9 +28,7 @@ class InvestorParticipation:
 
     def save(self):
         df = self.get_table()
-        df.to_sql(
-            "investorParticipation", con=self.engine, if_exists="replace", index=False
-        )
+        df.to_sql("investorParticipation", con=self.engine, if_exists="replace", index=False)
 
 
 if __name__ == "__main__":
