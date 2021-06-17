@@ -1,6 +1,7 @@
 from os import environ, path
 from dotenv import load_dotenv
 
+# basedir = path.abspath(path.dirname(__file__))
 basedir = path.dirname(__file__)
 load_dotenv(path.join(basedir, '.env'))
 
@@ -11,8 +12,21 @@ class Config:
     CPF = environ.get('CPF')
     KEY = environ.get('KEY')
     SESSION_COOKIE_NAME = environ.get('SESSION_COOKIE_NAME')
+    DEBUG = True
     STATIC_FOLDER = 'static'
     TEMPLATES_FOLDER = 'templates'
+    SQLALCHEMY_DATABASE_URI = environ.get('DATABASE_URI')
+    # FLASK_APP = environ.get('FLASK_APP')
+    # FLASK_ENV = environ.get('FLASK_ENV')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ECHO = True
+
+class ProdConfig(Config):
+    FLASK_ENV = 'production'
+    DEBUG = False
+    TESTING = False
+    DATABASE_URI = environ.get('PROD_DATABASE_URI')
+
 
 class DevConfig(Config):
     FLASK_ENV = 'development'
@@ -25,3 +39,5 @@ if __name__ == "__main__":
     config =Config()
     print(config.SECRET_KEY)
     
+
+
