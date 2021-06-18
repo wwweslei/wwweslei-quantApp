@@ -43,7 +43,18 @@ class Crawler_cei:
         df_free_wallet = pd.read_html(table_free_wallet, decimal=",", thousands=".")[0][0:-1]
         table_derivative_guarantee = self.firefox.find_element_by_id(self.asset_table_id_1).get_attribute("outerHTML")
         df_derivative_guarantee = pd.read_html(table_derivative_guarantee, decimal=",", thousands=".")[0][0:-1]
-        return pd.merge(df_free_wallet, df_derivative_guarantee, how="outer")
+        df= pd.merge(df_free_wallet, df_derivative_guarantee, how="outer")
+        df.columns = [
+            "empresa",
+            "tipo",
+            "cod",
+            "codISIN",
+            "Valor",
+            "qtde",
+            "fator",
+            "total",
+        ]
+        return df
 
     def get_treasury_direct(self):
         self.__navigate_to_asset_portfolio()
