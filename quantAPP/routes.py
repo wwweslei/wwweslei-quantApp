@@ -23,7 +23,7 @@ def home():
     """Homepage."""
     return render_template(
         'index.html',
-        title='Flask Blueprint Demo',
+        title='Dashboard',
         subtitle='Demonstration of Flask blueprints in action.',
         template='home-template',
     )
@@ -32,10 +32,11 @@ def home():
 asset = pd.read_sql_query(
     "SELECT  empresa, cod, Valor, qtde, total FROM asset_portfolio", db.get_engine())
 
+
 @asset_portfolio_bp.route('/asset', methods=['GET'])
 def asset_portfolio():
-    """Assetpage."""
     return render_template(
         'asset_portfolio.html',
-        asset = asset
+        asset=asset,
+        title='Asset',
     )
