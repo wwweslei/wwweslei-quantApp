@@ -14,11 +14,12 @@
     <link rel="stylesheet" href="/static/css/sidebar.css">
     <link rel="stylesheet" href="/static/css/navbar.css">
     <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/cards.css">
 
-    <!-- Font Awesome JS --> 
+    <!-- Font Awesome JS -->
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
         integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
-
+    <link rel="shortcut icon" href="/static/img/logo.png" />
     <title>{{title}}</title>
 </head>
 
@@ -29,13 +30,13 @@
 
         <!-- Page Content  -->
         <div id="content">
-
             {% include 'navbar.html' %}
-
             <div id="page_header">
                 {% block page_header %}{% endblock %}
             </div>
-        {% include 'footer.html' %}
+            <div id="footer">    
+                {% include 'footer.html' %}
+            </div>
         </div>
     </div>
 

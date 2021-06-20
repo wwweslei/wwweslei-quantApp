@@ -1,0 +1,46 @@
+/* ---------------------------------------------------
+CARDS STYLE
+----------------------------------------------------- */
+
+.content {
+    color: #fff;
+}
+
+#content-cards h3 {
+    font-family: Source Sans Pro;
+}
+
+.small-box {
+    padding: 10px 13px 4px;
+    border-radius: 5px;
+    box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.5);
+}
+
+.small-box:hover {
+    transition: all 0.2s ease-out;
+    box-shadow: 0px 4px 8px rgba(38, 38, 38, 0.1);
+    top: -5px;
+    border: 1px solid #cccccc;
+    background-color: white;
+}
+
+.bg-warning, .bg-warning .inner p {
+    color: black;
+
+}
+
+.inner p {
+    color: #fff;
+    font-weight: 400;
+    font-size: 1em;
+}
+
+.inner h3 {
+    font-weight: 700;
+    font-size: 2em;
+}
+
+.icon {
+    text-align: center;
+    /* background-color: rgba(0, 0, 0, 15%); */
+}
