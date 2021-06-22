@@ -16,12 +16,12 @@
                 <!-- small box -->
                 <div class="small-box bg-info">
                     <div class="inner">
-                        <h3>150</h3>
-
-                        <p>New Orders</p>
+                        <h3>{{ibov['day'][0]}}</h3>
+                        <h4>{{ibov['daily'][0]}}</h4>
+                        <p>Ibovespa</p>        
                     </div>
                     <div class="icon">
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="/ibov_update" class="small-box-footer">Atualizar</a> <i class="fas fa-cloud-download-alt"></i></a>
                     </div>
                 </div>
             </div>
@@ -30,13 +30,13 @@
                 <!-- small box -->
                 <div class="small-box bg-success">
                     <div class="inner">
-                        <h3>53<sup style="font-size: 20px">%</sup></h3>
-
-                        <p>Bounce Rate</p>
+                        <h3>{{sp500['day'][0]}}</h3>
+                        <h4>{{sp500['daily'][0]}}</h4> 
+                        <p>S&P 500</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-stats-bars"></i>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="/sp500_update" class="small-box-footer">Atualizar<i class="fas fa-cloud-download-alt"></i></a>
                     </div>
                 </div>
             </div>
@@ -45,13 +45,13 @@
                 <!-- small box -->
                 <div class="small-box bg-warning">
                     <div class="inner">
-                        <h3>44</h3>
+                        <h3>{{dol}}</h3>
 
-                        <p>Registrations</p>
+                        <p>USD/BRL</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-person-add"></i>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-cloud-download-alt"></i></a>
                     </div>
                 </div>
             </div>
@@ -66,7 +66,7 @@
                     </div>
                     <div class="icon">
                         <i class="ion ion-pie-graph"></i>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-cloud-download-alt"></i></a>
                     </div>
                 </div>
             </div>
@@ -75,6 +75,5 @@
     </div>
 
 </section>
-
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 {% endblock %}

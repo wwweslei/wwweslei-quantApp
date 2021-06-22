@@ -5,28 +5,13 @@ from . import db
 
 
 # Blueprint Configuration
-home_bp = Blueprint(
-    'home_bp', __name__,
-    template_folder='templates',
-    static_folder='static'
-)
+
 
 asset_portfolio_bp = Blueprint(
     'asset_portfolio_bp', __name__,
     template_folder='templates',
     static_folder='static'
 )
-
-
-@home_bp.route('/', methods=['GET'])
-def home():
-    """Homepage."""
-    return render_template(
-        'index.html',
-        title='Dashboard',
-        subtitle='Demonstration of Flask blueprints in action.',
-        template='home-template',
-    )
 
 
 @app.errorhandler(404)

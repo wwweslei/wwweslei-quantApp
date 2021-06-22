@@ -1,6 +1,4 @@
 from pandas_datareader import data as wb
-import pandas as pd
-import pprint
 from sqlalchemy import create_engine
 
 class Stock:
@@ -30,5 +28,5 @@ class Stock:
 
 if __name__ == '__main__':
     index = Stock("^BVSP", 'ibovespa')
-    index = Stock("BRL=X", 'cambio')
+    # index = Stock("BRL=X", 'cambio')
     print(index.save())
