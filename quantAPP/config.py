@@ -21,7 +21,7 @@ class Config:
     # FLASK_APP = environ.get('FLASK_APP')
     # FLASK_ENV = environ.get('FLASK_ENV')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ECHO = False
 
 
 class ProdConfig(Config):

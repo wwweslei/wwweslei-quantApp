@@ -1,16 +1,14 @@
 from flask import Blueprint, render_template
 from flask import current_app as app
-from quantAPP.ext.index import Index
-import pandas as pd
-from . import db
+from quantAPP.ext.profit import Profit, Stock
 
 
-ibov = Index()
+ibov = Stock("^BVSP", 'ibovespa')
 # ibov.save()
-sp500 = Index("^GSPC")
+sp500 = Stock("^GSPC", 'sp500')
 # sp500.save()
-
-
+dol = Stock("BRL=X", 'dolar')
+# dol.save()
 
 
 home_bp = Blueprint(
@@ -23,27 +21,25 @@ home_bp = Blueprint(
 @home_bp.route('/', methods=['GET'])
 def home(update=False):
     if(update == "ibov_update"):
-        ibov = Index()
+        ibov = Stock("^BVSP", 'ibovespa')
         ibov.save()
         pass
     if(update == "sp500_update"):
-        sp500 = Index("^GSPC")
+        sp500 = Stock("^GSPC", 'sp500')
         sp500.save()
         pass
     if(update == "dol_update"):
-        dol = Index("BRL=X")
+        dol = Stock("BRL=X", 'dolar')
         dol.save()
         pass
-    ibov = pd.read_sql_query(
-        "SELECT  * FROM ibov", db.get_engine())
-    sp500 = pd.read_sql_query(
-        "SELECT  * FROM sp500", db.get_engine())
-    dol = pd.read_sql_query(
-        "SELECT  * FROM cambio_daily", db.get_engine())
+    ibov = Profit('ibovespa')
+    dol = Profit('dolar')
+    sp500 = Profit('sp500')
+
     return render_template(
         'index.html',
         title='Dashboard',
-        ibov=ibov,
-        sp500 = sp500,
-        dol= round(float(dol.tail(1)["Close"]), 4)
+        ibov=ibov.price(),
+        sp500 = sp500.price(),
+        dol= dol.price(),
     )

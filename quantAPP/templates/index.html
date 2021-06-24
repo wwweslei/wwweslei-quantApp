@@ -16,8 +16,8 @@
                 <!-- small box -->
                 <div class="small-box bg-info">
                     <div class="inner">
-                        <h3>{{ibov['day'][0]}}</h3>
-                        <h4>{{ibov['daily'][0]}}</h4>
+                        <h3>{{ibov['day']}}</h3>
+                        <h4>{{ibov['daily']}}%</h4>
                         <p>Ibovespa</p>        
                     </div>
                     <div class="icon">
@@ -30,8 +30,8 @@
                 <!-- small box -->
                 <div class="small-box bg-success">
                     <div class="inner">
-                        <h3>{{sp500['day'][0]}}</h3>
-                        <h4>{{sp500['daily'][0]}}</h4> 
+                        <h3>{{sp500['day']}}</h3>
+                        <h4>{{sp500['daily']}}%</h4> 
                         <p>S&P 500</p>
                     </div>
                     <div class="icon">
@@ -45,13 +45,13 @@
                 <!-- small box -->
                 <div class="small-box bg-warning">
                     <div class="inner">
-                        <h3>{{dol}}</h3>
-
+                        <h3>{{dol['day']}}</h3>
+                        <h4>{{dol['daily']}}%</h4>
                         <p>USD/BRL</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-person-add"></i>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-cloud-download-alt"></i></a>
+                        <a href="/dol_update" class="small-box-footer">Atualizar<i class="fas fa-cloud-download-alt"></i></a>
                     </div>
                 </div>
             </div>
