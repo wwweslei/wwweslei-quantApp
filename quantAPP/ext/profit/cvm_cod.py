@@ -1,11 +1,14 @@
 import pandas as pd
 from sqlalchemy import create_engine
+from quantAPP.config import Config
 
 
+
+config = Config()
+engine = create_engine(config.SQLALCHEMY_DATABASE_URI)
 class CodeCvm:
     def __init__(self):
         self.URL = "https://cvmweb.cvm.gov.br/SWB/Sistemas/SCW/CPublica/CiaAb/ResultBuscaParticCiaAb.aspx?CNPJNome=&TipoConsult=C"
-        self.engine = create_engine("sqlite:///banco.db", echo=True)
 
     def get_table(self):
         df = pd.read_html(self.URL)[0]
@@ -14,9 +17,10 @@ class CodeCvm:
         return df[df.SITUAÇÃO.str.startswith("Concedido")]
 
     def save(self):
-        self.get_table().to_sql("Code_cvm", con=self.engine, if_exists="replace", index=False)
+        self.get_table().to_sql("code_cvm", con=engine, if_exists="replace", index=False)
+        return True
 
 
 if __name__ == "__main__":
     code = CodeCvm()
-    print(code.get_table())
+    print(code.save())

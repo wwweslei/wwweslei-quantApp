@@ -1,14 +1,6 @@
 from flask import Blueprint, render_template
 from flask import current_app as app
-from quantAPP.ext.profit import Profit, Stock
-
-
-ibov = Stock("^BVSP", 'ibovespa')
-# ibov.save()
-sp500 = Stock("^GSPC", 'sp500')
-# sp500.save()
-dol = Stock("BRL=X", 'dolar')
-# dol.save()
+from quantAPP.ext.profit import profit 
 
 
 home_bp = Blueprint(
@@ -21,25 +13,23 @@ home_bp = Blueprint(
 @home_bp.route('/', methods=['GET'])
 def home(update=False):
     if(update == "ibov_update"):
-        ibov = Stock("^BVSP", 'ibovespa')
-        ibov.save()
+        profit.save("^BVSP")
         pass
     if(update == "sp500_update"):
-        sp500 = Stock("^GSPC", 'sp500')
-        sp500.save()
+        profit.save("^GSPC")
         pass
     if(update == "dol_update"):
-        dol = Stock("BRL=X", 'dolar')
-        dol.save()
+        profit.save("BRL=X")
         pass
-    ibov = Profit('ibovespa')
-    dol = Profit('dolar')
-    sp500 = Profit('sp500')
+    if(update == "ifix_update"):
+        profit.ifix()
+        pass
 
     return render_template(
         'index.html',
         title='Dashboard',
-        ibov=ibov.price(),
-        sp500 = sp500.price(),
-        dol= dol.price(),
+        ibov=profit.earnings("BVSP"),
+        sp500=profit.earnings("GSPC"),
+        dol=profit.earnings("BRL=X"),
+        ifix=profit.ifix(),
     )

@@ -14,14 +14,12 @@ class Config:
     CPF = environ.get("CPF")
     KEY = environ.get("KEY")
     SESSION_COOKIE_NAME = environ.get("SESSION_COOKIE_NAME")
-    DEBUG = True
     STATIC_FOLDER = "static"
     TEMPLATES_FOLDER = "templates"
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basePath, "banco.db")
-    # FLASK_APP = environ.get('FLASK_APP')
-    # FLASK_ENV = environ.get('FLASK_ENV')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = False
+    ENV = 'development'
 
 
 class ProdConfig(Config):
@@ -40,4 +38,4 @@ class DevConfig(Config):
 
 if __name__ == "__main__":
     config = Config()
-    print(config.SECRET_KEY)
+    print(config.SQLALCHEMY_DATABASE_URI)

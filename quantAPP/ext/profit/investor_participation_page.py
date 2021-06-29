@@ -10,7 +10,7 @@ class InvestorParticipation:
     def __init__(self):
         self.engine = create_engine("sqlite:///banco.db", echo=True)
         self.URL = "https://sistemaswebb3-listados.b3.com.br/investorParticipationPage/"
-        self.firefox = webdriver.Firefox()
+        self.firefox = webdriver.Chrome()
         self.firefox.get(self.URL)
 
     def get_table(self):

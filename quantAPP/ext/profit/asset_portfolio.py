@@ -2,10 +2,13 @@ from quantAPP.config import Config
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from sqlalchemy import create_engine
 import pandas as pd
 
+options = Options()
+options.headless = True
 
 class Crawler_cei:
     def __init__(self):
@@ -13,8 +16,8 @@ class Crawler_cei:
         self.cpf = config.CPF
         self.key = config.KEY
         self.URL = "https://ceiapp.b3.com.br/CEI_Responsivo/"
-        self.engine = create_engine("sqlite:///banco.db", echo=True)
-        self.firefox = webdriver.Firefox()
+        self.engine = create_engine("sqlite:///banco.db", echo=False)
+        self.firefox = webdriver.Chrome(options=options)
         self.asset_table_id_0 = "ctl00_ContentPlaceHolder1_rptAgenteContaMercado_ctl01_rptContaMercado_ctl00_rprCarteira_ctl00_grdCarteira"
         self.asset_table_id_1 = "ctl00_ContentPlaceHolder1_rptAgenteContaMercado_ctl01_rptContaMercado_ctl00_rprCarteira_ctl01_grdCarteira"
         self.treasury_direct_id = "ctl00_ContentPlaceHolder1_rptAgenteContaMercado_ctl01_rptContaMercado_ctl00_trBodyTesouroDireto"

@@ -24,7 +24,7 @@ class BuscaEmpresaListada:
 
     def save(self):
         df = self.get_table()
-        df.to_sql("empresas", con=self.engine, if_exists="replace", index=False)
+        df.to_sql("ibov_index_companies", con=self.engine, if_exists="replace", index=False)
 
 
 if __name__ == "__main__":
