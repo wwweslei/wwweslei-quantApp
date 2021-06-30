@@ -3,6 +3,11 @@ from flask import current_app as app
 from quantAPP.ext.profit import profit 
 
 
+wallet_stocks = profit.Wallet.stocks()
+wallet_stocks = wallet_stocks[['ticket', 'qtde']]
+
+
+
 home_bp = Blueprint(
     'home_bp', __name__,
     template_folder='templates',
@@ -28,8 +33,9 @@ def home(update=False):
     return render_template(
         'index.html',
         title='Dashboard',
-        ibov=profit.earnings("BVSP"),
-        sp500=profit.earnings("GSPC"),
+        ibov=profit.earnings("^BVSP"),
+        sp500=profit.earnings("^GSPC"),
         dol=profit.earnings("BRL=X"),
         ifix=profit.ifix(),
+        wallet_stocks=wallet_stocks
     )

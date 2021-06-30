@@ -7,36 +7,43 @@ import pandas as pd
 
 
 config = Config()
-engine = create_engine(config.SQLALCHEMY_DATABASE_URI,
-                       echo=config.SQLALCHEMY_ECHO)
+path = r"C:\Users\wwwes\Documents\wwweslei-quantApp\quantAPP\ext\profit\company_files"
+engine = create_engine(config.SQLALCHEMY_DATABASE_URI, echo=config.SQLALCHEMY_ECHO)
 
 
-def listed_companies_by_sector_update():
-    df = pd.read_html("https://www.infomoney.com.br/cotacoes/empresas-b3/")
-    frames = [
-        df[10].assign(Setor="Utilidade Pública"),
-        df[9].assign(Setor="Telecomunicações"),
-        df[8].assign(Setor="Tecnologia da Informação"),
-        df[7].assign(Setor="Saúde"),
-        df[6].assign(Setor="Petróleo, Gás e Biocombustíveis"),
-        df[4].assign(Setor="Materiais Básicos"),
-        df[5].assign(Setor="Outros"),
-        df[3].assign(Setor="Financeiro"),
-        df[2].assign(Setor="Consumo não Cíclico"),
-        df[1].assign(Setor="Consumo Cíclico"),
-        df[0].assign(Setor="Bens Industriais"),
-    ]
-    result = pd.concat(frames, ignore_index=True)
-    result['Empresas'] = result['Empresas'].str.upper()
-    result.columns = ["company", "ticket1", "ticket2", "ticket3", "ticket4", "ticket5", "ticket6", "setor"]
-    result.to_sql("listed_companies_by_sector", con=engine,
-                  if_exists="replace", index=False)
-    return True
+class Wallet:
+    asset = pd.read_sql_query(
+        "SELECT * FROM asset_portfolio", engine)
+
+    @staticmethod
+    def fii():
+        fii = Wallet.asset[Wallet.asset['name'].str.startswith("FII")]
+        return fii
+
+    @staticmethod
+    def bdr():
+        bdr = Wallet.asset[Wallet.asset['ticket'].str.endswith('34')]
+        return bdr
+
+    @staticmethod
+    def etf():
+        all_end11 = Wallet.asset[Wallet.asset['ticket'].str.endswith('11')]
+        fii = Wallet.asset[Wallet.asset['name'].str.startswith("FII")]
+        etf = all_end11[all_end11.ticket.isin(fii['ticket']) == False]
+        return etf
+
+    @staticmethod
+    def stocks():
+        etf = Wallet.etf()
+        bdr = Wallet.bdr()
+        fii = Wallet.fii()
+        etf_bdr_fii = pd.concat([etf, bdr, fii], ignore_index=bool)
+        return Wallet.asset[Wallet.asset.ticket.isin(etf_bdr_fii['ticket']) == False]
 
 
-def get_name(ticket):
+def get_name_company(ticket):
     ticket.upper()
-    stmt = f"""SELECT company FROM listed_companies_by_sector
+    stmt = f"""SELECT company FROM companies
                  where ticket1 = '{ticket}' or 
                        ticket2 = '{ticket}' or 
                        ticket3 = '{ticket}' or 
@@ -46,10 +53,9 @@ def get_name(ticket):
     return engine.execute(stmt).fetchone()[0]
 
 
-def get_tickets(ticket):
+def get_tickets_company(ticket):
     stmt = f"""SELECT "ticket1", "ticket2", "ticket3", "ticket4", "ticket5", "ticket6"
-                    FROM listed_companies_by_sector
-                    where company = '{get_name(ticket.upper())}';"""
+               FROM companies where company = '{get_name_company(ticket.upper())}';"""
     tickets = engine.execute(stmt).fetchone()
     tickets = set([x.replace('F', '') for x in tickets if(x)])
     return list(tickets)
@@ -57,11 +63,14 @@ def get_tickets(ticket):
 
 def save(ticket, is_all=False):
     if(not is_all and ticket[-1].isdigit()):
-        last_price = wb.get_data_yahoo(ticket + ".SA")
-        last_price.to_sql(ticket, con=engine, if_exists="replace")
+        try:
+            last_price = wb.get_data_yahoo(ticket + ".SA")
+            last_price.to_sql(ticket, con=engine, if_exists="replace")
+        except:
+            return False
         return True
     if(ticket[-1].isdigit()):
-        for ticket in get_tickets():
+        for ticket in get_tickets_company():
             last_price = wb.get_data_yahoo(ticket + ".SA")
             last_price.to_sql(ticket, con=engine, if_exists="replace")
     else:
@@ -71,10 +80,9 @@ def save(ticket, is_all=False):
     return True
 
 
-def update():
-    stmt = stmt = f"""SELECT "ticket1", "ticket2", "ticket3", "ticket4", "ticket5", "ticket6"
-                    FROM listed_companies_by_sector
-                    """
+def update_value_companies():
+    stmt = f"""SELECT "ticket1", "ticket2", "ticket3", "ticket4", "ticket5",
+                     "ticket6" FROM companies"""
     companies = engine.execute(stmt).fetchall()
     full_tickets = []
     for tickets in companies:
@@ -84,13 +92,32 @@ def update():
         list(set([x.replace('F', '') for x in full_tickets if(x)])))
     for ticket in full_tickets:
         try:
-            print(save(ticket), ticket)
+            print(save(ticket), "save -> ", ticket)
         except:
+            print(save(ticket), "erro -> ", ticket)
             continue
+    return "complete"
+
+
+def update_value_fii():
+    stmt = "SELECT Ticket FROM fii;"
+    fiis = engine.execute(stmt).fetchall()
+    for fii in fiis:
+        fii = str(fii[0])
+        try:
+            print(save(fii), "save -> ", fii)
+        except:
+            print(save(fii), "ERRO -> ", fii)
+            pass
+
+    return "complete"
 
 
 def calc_earnings(last_value, first_value):
-    earnings = round(float(last_value/first_value - 1) * 100, 2)
+    try:
+        earnings = round(float(last_value/first_value - 1) * 100, 2)
+    except:
+        return 9999
     return earnings
 
 
@@ -121,6 +148,7 @@ def earnings(ticket):
             'annual': annual
             }
 
+
 def ifix():
     df = wb.get_data_yahoo('ifix.sa')
 
@@ -128,6 +156,8 @@ def ifix():
             'daily': calc_earnings(df['Close'], df['Open'])
             }
 
-
 if __name__ == "__main__":
-    print(ifix())
+    carteira = Wallet.stocks()
+    # print(carteira)
+    carteira.plot.bar(x='name', y='qtde', rot=0)
+
