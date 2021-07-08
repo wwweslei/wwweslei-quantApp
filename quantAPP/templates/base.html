@@ -15,14 +15,13 @@
     <link rel="stylesheet" href="/static/css/navbar.css">
     <link rel="stylesheet" href="/static/css/base.css">
     <link rel="stylesheet" href="/static/css/cards.css">
+    <link rel="stylesheet" href="/static/css/charts.css">
 
     <!-- Font Awesome JS -->
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
         integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
     <link rel="shortcut icon" href="/static/img/logo.png" />
-    <!-- Chart js -->
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js'></script>
-    
+    {% block page_head %}{% endblock %}
     <title>{{title}}</title>
 </head>
 
@@ -35,7 +34,7 @@
         <div id="content">
             {% include 'navbar.html' %}
             <div id="page_header">
-                {% block page_header %}{% endblock %}
+                {% block page_body %}{% endblock %}
             </div>
             <div id="footer">    
                 {% include 'footer.html' %}

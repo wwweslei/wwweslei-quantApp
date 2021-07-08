@@ -1,0 +1,35 @@
+<div id="line_top_x"></div>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['line'] });
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'últimos 12 meses');
+        data.addColumn('number', 'Ibovespa');
+        data.addColumn('number', 'S&P500');
+        data.addColumn('number', 'Dolar');
+        data.addColumn('number', 'Ifix');
+
+        data.addRows([
+{%for key in ind%}
+['{{key}}', {{ind[key]}}, {{sp[key]}}, {{ wdo[key]}}, {{ ifix0[key]}}],
+{% endfor %}
+        ]);
+        var options = {
+            chart: {
+                title: 'Box Office Earnings in First Two Weeks of Opening',
+                subtitle: 'in millions of dollars (USD)'
+            },
+            width: 900,
+            height: 500,
+            axes: {
+                x: {
+                    0: { side: 'top' }
+                }
+            }
+        };
+        var chart = new google.charts.Line(document.getElementById('line_top_x'));
+        chart.draw(data, google.charts.Line.convertOptions(options));
+    }
+</script>

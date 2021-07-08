@@ -1,0 +1,118 @@
+<br>
+
+<!-- Main content c -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm">
+                <div id="donutchart"></div>
+            </div>
+            <div class="col-sm">
+                <div id="donutchart3"></div>
+            </div>
+            <div class="col-sm">
+                <div id="donutchart4"></div>
+            </div>
+
+            <div class="col-sm">
+                <div id="donutchart2"></div>
+            </div>
+        </div>
+    </div>
+</section>
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm">
+                <div id="donutchart5"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+<!--Load the AJAX API-->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load("current", { packages: ["corechart"] });
+    google.charts.setOnLoadCallback(drawChart);
+    var options = {
+        chartArea: { width: '95%', height: '80%' },
+        title: "Distribuição da carteira de Ações",
+        // width: 790,
+        height: 300,
+        bar: { groupWidth: "95%" },
+        pieHole: 0.4,
+        legend: { position: "center" },
+    };
+
+    function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ["Element", "Quantidade", { role: "style" }],
+            {%for x, y in stocks.values %}
+    ["{{x}}", {{ y }}, 'color: #76A7FA'],
+        {% endfor %}  
+                
+            ]);
+    var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+    chart.draw(data, options);
+    }
+    google.charts.setOnLoadCallback(drawChart2);
+    function drawChart2() {
+        var data = google.visualization.arrayToDataTable([
+            ["Element", "Quantidade", { role: "style" }],
+            {%for x, y in fii.values %}
+    ["{{x}}", {{ y }}, 'color: #76A7FA'],
+        {% endfor %}  
+                
+            ]);
+    options['title'] = "Distribuição da carteira de FIIs"
+    var chart2 = new google.visualization.PieChart(document.getElementById('donutchart2'));
+    chart2.draw(data, options);
+    }
+
+    google.charts.setOnLoadCallback(drawChart3);
+    function drawChart3() {
+        var data = google.visualization.arrayToDataTable([
+            ["Element", "Quantidade", { role: "style" }],
+            {%for x, y in bdr.values %}
+    ["{{x}}", {{ y }}, 'color: #76A7FA'],
+        {% endfor %}  
+                
+            ]);
+    options['title'] = "Distribuição da carteira de BDRs"
+    var chart3 = new google.visualization.PieChart(document.getElementById('donutchart3'));
+    chart3.draw(data, options);
+    }
+
+    google.charts.setOnLoadCallback(drawChart4);
+    function drawChart4() {
+        var data = google.visualization.arrayToDataTable([
+            ["Element", "Quantidade", { role: "style" }],
+            {%for x, y in etf.values %}
+    ["{{x}}", {{ y }}, 'color: #76A7FA'],
+        {% endfor %}  
+                
+            ]);
+    options['title'] = "Distribuição da carteira de ETFs"
+    var chart4 = new google.visualization.PieChart(document.getElementById('donutchart4'));
+    chart4.draw(data, options);
+    }
+
+    google.charts.setOnLoadCallback(drawChart5);
+    function drawChart5() {
+        var data = google.visualization.arrayToDataTable([
+            ["Element", "Quantidade", { role: "style" }],
+            {%for x in wallet %}
+    ["{{x}}", {{ wallet[x]}}, 'color: #76A7FA'],
+        {% endfor %}  
+                
+            ]);
+    options['title'] = "Distribuição da carteira Geral"
+    var chart5 = new google.visualization.PieChart(document.getElementById('donutchart5'));
+    chart5.draw(data, options);
+    }
+</script>

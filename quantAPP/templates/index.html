@@ -1,79 +1,15 @@
 {% extends "base.html" %}
-{% block page_header %}
-
-<div id="content-cards">
-    <h3>Dashboard</h3>
-</div>
-<br>
+{% block page_head %}
+{% endblock %}
 
 
-<!-- Main content -->
-<section class="content">
-    <div class="container-fluid">
-        <!-- Small boxes (Stat box) -->
-        <div class="row">
-            <div class="col-lg-3 col-6">
-                <!-- small box -->
-                <div class="small-box bg-info">
-                    <div class="inner">
-                        <h3>{{ibov['day']}}</h3>
-                        <h4>{{ibov['daily']}}%</h4>
-                        <p>Ibovespa</p>        
-                    </div>
-                    <div class="icon">
-                        <a href="/ibov_update" class="small-box-footer">Atualizar</a> <i class="fas fa-cloud-download-alt"></i></a>
-                    </div>
-                </div>
-            </div>
-            <!-- ./col -->
-            <div class="col-lg-3 col-6">
-                <!-- small box -->
-                <div class="small-box bg-success">
-                    <div class="inner">
-                        <h3>{{sp500['day']}}</h3>
-                        <h4>{{sp500['daily']}}%</h4> 
-                        <p>S&P 500</p>
-                    </div>
-                    <div class="icon">
-                        <i class="ion ion-stats-bars"></i>
-                        <a href="/sp500_update" class="small-box-footer">Atualizar<i class="fas fa-cloud-download-alt"></i></a>
-                    </div>
-                </div>
-            </div>
-            <!-- ./col -->
-            <div class="col-lg-3 col-6">
-                <!-- small box -->
-                <div class="small-box bg-warning">
-                    <div class="inner">
-                        <h3>{{dol['day']}}</h3>
-                        <h4>{{dol['daily']}}%</h4>
-                        <p>USD/BRL</p>
-                    </div>
-                    <div class="icon">
-                        <i class="ion ion-person-add"></i>
-                        <a href="/dol_update" class="small-box-footer">Atualizar<i class="fas fa-cloud-download-alt"></i></a>
-                    </div>
-                </div>
-            </div>
-            <!-- ./col -->
-            <div class="col-lg-3 col-6">
-                <!-- small box -->
-                <div class="small-box bg-danger">
-                    <div class="inner">
-                        <h3>{{ifix['day']}}</h3>
-                        <h4>{{ifix['daily']}}%</h4>
-                        <p>IFIX</p>
-                    </div>
-                    <div class="icon">
-                        <i class="ion ion-pie-graph"></i>
-                        <a href="/ifix_update" class="small-box-footer">Atualizar<i class="fas fa-cloud-download-alt"></i></a>
-                    </div>
-                </div>
-            </div>
-            <!-- ./col -->
-        </div>
-    </div>
+{% block page_body %}
 
-</section>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+{% include 'cards.html' %}
+{% include 'charts.html' %}
+{% include 'Earnings_charts.html' %}
+{% include 'line_charts.html' %}
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 {% endblock %}
