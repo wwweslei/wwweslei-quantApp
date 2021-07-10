@@ -1,10 +1,17 @@
 {% extends "base.html" %}
 {% block page_body %}
 <table>
-    {%for asset in asset.values%}
-    <tr>
-        <td>{{asset}}</td>
-    </tr>
-    {% endfor %}
+<h1>asset_portfolio</h1>
+
+ {% if sunalt != None %}
+
+      <h2>Plot from metlibplot</h2>
+    <img src="data:image/png;base64,{{ sunalt }}">
+{% endif %}
+
+
+
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 </table>
 {% endblock %}
