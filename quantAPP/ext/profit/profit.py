@@ -1,4 +1,5 @@
 from datetime import date
+import sqlite3
 from quantAPP.config import Config
 from sqlalchemy import create_engine
 import pandas_datareader.data as web
@@ -14,7 +15,7 @@ engine = create_engine(config.SQLALCHEMY_DATABASE_URI,
 
 
 class Wallet:
-    asset = pd.read_sql_query("SELECT * FROM asset_portfolio", engine)
+    asset = pd.read_sql_query("SELECT * FROM asset_portfolio", con=engine)
 
     @staticmethod
     def fii() -> pd.DataFrame:
@@ -47,8 +48,7 @@ def calc(last_value: float, first_value: float) -> float:
 
 
 def earnings(ticket: str) -> Dict[str, int]:
-    df = pd.read_sql_query(
-        f"SELECT  * FROM `{ticket}`", engine, index_col="Date")
+    df = pd.read_sql_query(f"SELECT  * FROM `{ticket}`", con=engine, index_col="Date")
     df.index = pd.to_datetime(df.index)
     day = float(df.tail(1)["Close"])
     return {
@@ -62,13 +62,17 @@ def earnings(ticket: str) -> Dict[str, int]:
 
 
 def stock(ticket: str, is_update: bool = False) -> pd.DataFrame:
+    ticket = ticket.upper()
     if is_update:
-        df = yf.download(ticket)
-        df.to_sql(ticket, con=engine, if_exists="replace")
+        df = yf.download(ticket+".SA")
+        df.to_sql(ticket.removesuffix(".SA"), con=engine, if_exists="replace")
         return df
-    df = pd.read_sql(f"SELECT * FROM {ticket}", con=engine, index_col="Date")
-    df.index = pd.to_datetime(df.index)
-    return df
+    try:
+        df = pd.read_sql(f"SELECT * FROM {ticket}", con=engine, index_col="Date")
+        df.index = pd.to_datetime(df.index)
+        return df
+    except:
+        stock(ticket, is_update= True)
 
 
 def ind(is_update: bool = False) -> pd.DataFrame:
@@ -76,9 +80,12 @@ def ind(is_update: bool = False) -> pd.DataFrame:
         df = yf.download("^BVSP")
         df.to_sql("IND", con=engine, if_exists="replace")
         return df
-    df = pd.read_sql("SELECT * FROM IND", con=engine, index_col="Date")
-    df.index = pd.to_datetime(df.index)
-    return df
+    try:
+        df = pd.read_sql("SELECT * FROM IND", con=engine, index_col="Date")
+        df.index = pd.to_datetime(df.index)
+        return df
+    except:
+        ind(is_update=True)
 
 
 def sp500(is_update: bool = False) -> pd.DataFrame:
@@ -86,9 +93,12 @@ def sp500(is_update: bool = False) -> pd.DataFrame:
         df = yf.download("^GSPC")
         df.to_sql("SP500", con=engine, if_exists="replace")
         return df
-    df = pd.read_sql("SELECT * FROM SP500", con=engine, index_col="Date")
-    df.index = pd.to_datetime(df.index)
-    return df
+    try:
+        df = pd.read_sql("SELECT * FROM SP500", con=engine, index_col="Date",)
+        df.index = pd.to_datetime(df.index)
+        return df
+    except :
+        sp500(is_update=True)
 
 
 def ifix(is_update: bool = False) -> pd.DataFrame:
@@ -99,10 +109,12 @@ def ifix(is_update: bool = False) -> pd.DataFrame:
         df.index.names = ["Date"]
         df.to_sql("IFIX", con=engine, if_exists="replace")
         return df
-    df = pd.read_sql("SELECT * FROM IFIX", con=engine, index_col="Date")
-    df.index = pd.to_datetime(df.index)
-    return df
-
+    try:
+        df = pd.read_sql("SELECT * FROM IFIX", con=engine, index_col="Date")
+        df.index = pd.to_datetime(df.index)
+        return df
+    except:
+        ifix(is_update=True)
 
 def wdo(is_update: bool = False) -> pd.DataFrame:
     if is_update:
@@ -113,10 +125,12 @@ def wdo(is_update: bool = False) -> pd.DataFrame:
         df.index.names = ["Date"]
         df.to_sql("WDO", con=engine, if_exists="replace")
         return df
-    df = pd.read_sql("SELECT * FROM WDO", con=engine, index_col="Date")
-    df.index = pd.to_datetime(df.index)
-    return df
-
+    try:    
+        df = pd.read_sql("SELECT * FROM WDO", con=engine, index_col="Date")
+        df.index = pd.to_datetime(df.index)
+        return df
+    except:
+        wdo(is_update=True)
 
 if __name__ == "__main__":
-    print(yf.download("petr4.SA"))
+    print(ind())
