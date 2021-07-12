@@ -10,13 +10,13 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
         integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
     <!-- Our Custom CSS -->
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/sidebar.css">
     <link rel="stylesheet" href="/static/css/navbar.css">
     <link rel="stylesheet" href="/static/css/base.css">
     <link rel="stylesheet" href="/static/css/cards.css">
     <link rel="stylesheet" href="/static/css/charts.css">
-
+    <link rel="stylesheet" href="/static/css/form_login.css">
     <!-- Font Awesome JS -->
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
         integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
@@ -28,16 +28,16 @@
 <body>
 
     <div class="wrapper">
-        {% include 'sidebar.html' %}
+        {% include 'components/sidebar.html' %}
 
         <!-- Page Content  -->
         <div id="content">
-            {% include 'navbar.html' %}
+            {% include 'components/navbar.html' %}
             <div id="page_header">
                 {% block page_body %}{% endblock %}
             </div>
-            <div id="footer">    
-                {% include 'footer.html' %}
+            <div id="footer">
+                {% include 'components/footer.html' %}
             </div>
         </div>
     </div>

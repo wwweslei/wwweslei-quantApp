@@ -1,13 +1,10 @@
-<!-- app/templates/auth/register.html -->
-
 {% import "bootstrap/wtf.html" as wtf %}
-{% extends "base_bp.html" %}
-{% block title %}Register{% endblock %}
-{% block body %}
+{% extends "components/base.html" %}
+{% block page_body %}
 <div class="content-section">
+    <br />
     <div class="center">
-        <h1>Register for an account</h1>
-        <br />
+        <h2>Register for an account</h2>
         {{ wtf.quick_form(form) }}
     </div>
 </div>

@@ -1,20 +1,27 @@
 <!-- app/templates/home/index.html -->
+{% extends "components/base.html" %}
+{% block page_head %}
+{% endblock %}
+{% block page_body %}
 
-{% extends "base_bp.html" %}
-{% block title %}Home{% endblock %}
-{% block body %}
-<div class="intro-header">
-    <div class="container">
+{% include 'components/cards.html' %}
+<section class="content">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-12">
-                <div class="intro-message">
-                    <h1>Project Dream Team</h1>
-                    <h3>The best company in the world!</h3>
-                    <hr class="intro-divider">
-                    </ul>
-                </div>
-            </div>
+            <div id="columnchart_material" class="chart mx-4 mt-4"></div>
+        </div>
+        <div class="row">
+            <div id="line_top_x" class="chart mx-4 mt-4"></div>
         </div>
     </div>
-</div>
+</section>
+
+
+
+
+
+
+{% include 'components/column_charts.html' %}
+{% include 'components/line_charts.html' %}
+
 {% endblock %}

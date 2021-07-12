@@ -23,6 +23,8 @@ class Config:
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basePath, "banco.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = False
+    DEBUG_TB_INTERCEPT_REDIRECTS = False
+    FLASK_ADMIN_SWATCH = "cerulean"
     ENV = 'development'
 
 

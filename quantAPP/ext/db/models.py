@@ -1,7 +1,7 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from quantAPP import db, login_manager
-
+from quantAPP import login_manager
+from quantAPP.ext.db import db
 
 class UserWallet(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -1,13 +1,15 @@
 <!-- Sidebar  -->
 <nav id="sidebar">
     <div class="sidebar-header">
+        <a href="{{ url_for('home.homepage') }}">
         <h4><i class="fas fa-poll" style="color:#F39571"></i> Bootstrap <b>Investment</b></h4>
+        </a>
         <strong><i class="fas fa-poll"></i></strong>
     </div>
 
     <ul class="list-unstyled components">
         <li>
-            <a href="{{url_for('home_bp.home')}}">
+            <a href="{{url_for('home.homepage')}}">
                 <i class="fas fa-home"></i>
                 Home
             </a>
@@ -18,7 +20,7 @@
             </a>
             <ul class="collapse list-unstyled" id="homeSubmenu">
                 <li>
-                    <a href="{{url_for('asset_portfolio_bp.asset_portfolio')}}">Home 1</a>
+                    <a href="{{url_for('home.homepage')}}">Home 1</a>
                 </li>
                 <li>
                     <a href="#">Home 2</a>

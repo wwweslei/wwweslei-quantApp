@@ -1,16 +1,14 @@
-from flask_migrate import Migrate
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 from .config import Config
 from flask_bootstrap import Bootstrap
+from quantAPP.ext import db
+from quantAPP.ext.admin import admin
 
 
-db = SQLAlchemy()
 login_manager = LoginManager()
 toolbar = DebugToolbarExtension()
-migrate = Migrate()
 
 def init_app():
     app = Flask(__name__, instance_relative_config=False)
@@ -19,36 +17,25 @@ def init_app():
 
     Bootstrap(app)
     db.init_app(app)
-    db.create_all()
     toolbar.init_app(app)
     login_manager.init_app(app)
     login_manager.login_message = "You must be logged in to access this page."
     login_manager.login_view = "auth.login"
-    migrate.init_app(app, db)
+    admin.init_app(app)
 
 
 
     with app.app_context():
-        from quantAPP import models
         
-        from .routes import asset_portfolio_bp
-        app.register_blueprint(asset_portfolio_bp)
-        
-        from .views import auth_blueprint
+        from quantAPP.ext.auth.views import auth as auth_blueprint
         app.register_blueprint(auth_blueprint)
-        
-        from .home import home_bp
-        app.register_blueprint(home_bp)
-        
-        from .views import home_blueprint
+  
+        from quantAPP.ext.home.views import home_blueprint
         app.register_blueprint(home_blueprint)
         
-
-        from .views import admin_blueprint
-        app.register_blueprint(admin_blueprint, url_prefix='/admin')
-
-
+        from quantAPP.ext.dashboard.views import dashboard_blueprint
+        app.register_blueprint(dashboard_blueprint)
 
         return app
 
-from quantAPP import models
+from quantAPP.ext.db import models
