@@ -2,7 +2,7 @@ from flask import flash, redirect, render_template, url_for
 from flask_login import login_required, login_user, logout_user
 from .forms import LoginForm, RegistrationForm
 from quantAPP.ext.db import db
-from quantAPP.ext.db.models import Employee
+from quantAPP.ext.db.models import User
 from flask import Blueprint
 
 auth = Blueprint('auth', __name__)
@@ -12,13 +12,13 @@ auth = Blueprint('auth', __name__)
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        employee = Employee(email=form.email.data,
+        user = User(email=form.email.data,
                             username=form.username.data,
                             first_name=form.first_name.data,
                             last_name=form.last_name.data,
                             password=form.password.data)
 
-        db.session.add(employee)
+        db.session.add(user)
         db.session.commit()
         flash('You have successfully registered! You may now login.')
         return redirect(url_for('auth.login'))
@@ -29,15 +29,15 @@ def register():
 def login():
     """
     Handle requests to the /login route
-    Log an employee in through the login form
+    Log an user in through the login form
     """
     form = LoginForm()
     if form.validate_on_submit():
 
-        employee = Employee.query.filter_by(email=form.email.data).first()
-        if employee is not None and employee.verify_password(
+        user = User.query.filter_by(email=form.email.data).first()
+        if user is not None and user.verify_password(
                 form.password.data):
-            login_user(employee)
+            login_user(user)
 
             # return redirect(url_for('home.dashboard'))
             return redirect(url_for('dashboard_blueprint.dashboard'))
@@ -53,7 +53,7 @@ def login():
 def logout():
     """
     Handle requests to the /logout route
-    Log an employee out through the logout link
+    Log an user out through the logout link
     """
     logout_user()
     flash('You have successfully been logged out.')

@@ -3,28 +3,9 @@ from flask_login import UserMixin
 from quantAPP import login_manager
 from quantAPP.ext.db import db
 
-class UserWallet(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    ticket = db.Column(db.String(10), nullable=False)
-    kind = db.Column(db.String(10), nullable=False)
-    date = db.Column(db.DateTime)
-    amount = db.Column(db.Integer)
-    price = db.Column(db.Float)
-    commission = db.Column(db.Float)
 
-    def __repr__(self):
-        return f"<UserWallet {self.username}>"
-
-
-class Employee(UserMixin, db.Model):
-    """
-    Create an Employee table
-    """
-
-    # Ensures table will be named in plural and not in singular
-    # as is the name of the model
-    __tablename__ = 'employees'
+class User(UserMixin, db.Model):
+    __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(60), index=True, unique=True)
@@ -32,69 +13,40 @@ class Employee(UserMixin, db.Model):
     first_name = db.Column(db.String(60), index=True)
     last_name = db.Column(db.String(60), index=True)
     password_hash = db.Column(db.String(128))
-    department_id = db.Column(db.Integer, db.ForeignKey('departments.id'))
-    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     is_admin = db.Column(db.Boolean, default=False)
+    wallets = db.relationship('Wallet', backref='users', lazy='dynamic')
 
     @property
     def password(self):
-        """
-        Prevent pasword from being accessed
-        """
-        raise AttributeError('password is not a readable attribute.')
+        raise AttributeError('A senha não é um atributo legível.')
 
     @password.setter
     def password(self, password):
-        """
-        Set password to a hashed password
-        """
         self.password_hash = generate_password_hash(password)
 
     def verify_password(self, password):
-        """
-        Check if hashed password matches actual password
-        """
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
-        return '<Employee: {}>'.format(self.username)
+        return f'<User: {self.username}>'
 
 
-# Set up user_loader
+
 @login_manager.user_loader
 def load_user(user_id):
-    return Employee.query.get(int(user_id))
+    return User.query.get(int(user_id))
 
 
-class Department(db.Model):
-    """
-    Create a Department table
-    """
-
-    __tablename__ = 'departments'
-
+class Wallet(db.Model):
+    __tablename__ = 'wallets'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(60), unique=True)
-    description = db.Column(db.String(200))
-    employees = db.relationship('Employee', backref='department',
-                                lazy='dynamic')
+    ticket = db.Column(db.String(10), nullable=False)
+    kind = db.Column(db.String(10), nullable=False)
+    date = db.Column(db.DateTime)
+    amount = db.Column(db.Integer)
+    price = db.Column(db.Float)
+    commission = db.Column(db.Float)
+    users_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     def __repr__(self):
-        return '<Department: {}>'.format(self.name)
-
-
-class Role(db.Model):
-    """
-    Create a Role table
-    """
-
-    __tablename__ = 'roles'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(60), unique=True)
-    description = db.Column(db.String(200))
-    employees = db.relationship('Employee', backref='role',
-                                lazy='dynamic')
-
-    def __repr__(self):
-        return '<Role: {}>'.format(self.name)
+        return f"<UserWallet {self.username}>"

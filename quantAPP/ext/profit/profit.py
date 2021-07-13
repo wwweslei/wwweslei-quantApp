@@ -14,42 +14,40 @@ engine = create_engine(config.SQLALCHEMY_DATABASE_URI,
                        echo=config.SQLALCHEMY_ECHO)
 
 
-class Wallet:
-    asset = pd.read_sql_query("SELECT * FROM asset_portfolio", con=engine)
+# class Wallet:
+#     asset = pd.read_sql_query("SELECT * FROM asset_portfolio", con=engine)
 
-    @staticmethod
-    def fii() -> pd.DataFrame:
-        fii = Wallet.asset[Wallet.asset["name"].str.startswith("FII")]
-        return fii
+#     @staticmethod
+#     def fii() -> pd.DataFrame:
+#         fii = Wallet.asset[Wallet.asset["name"].str.startswith("FII")]
+#         return fii
 
-    @staticmethod
-    def bdr() -> pd.DataFrame:
-        bdr = Wallet.asset[Wallet.asset["ticket"].str.endswith("34")]
-        return bdr
+#     @staticmethod
+#     def bdr() -> pd.DataFrame:
+#         bdr = Wallet.asset[Wallet.asset["ticket"].str.endswith("34")]
+#         return bdr
 
-    @staticmethod
-    def etf() -> pd.DataFrame:
-        all_end11 = Wallet.asset[Wallet.asset["ticket"].str.endswith("11")]
-        fii = Wallet.asset[Wallet.asset["name"].str.startswith("FII")]
-        etf = all_end11[all_end11.ticket.isin(fii["ticket"]) == False]
-        return etf
+#     @staticmethod
+#     def etf() -> pd.DataFrame:
+#         all_end11 = Wallet.asset[Wallet.asset["ticket"].str.endswith("11")]
+#         fii = Wallet.asset[Wallet.asset["name"].str.startswith("FII")]
+#         etf = all_end11[all_end11.ticket.isin(fii["ticket"]) == False]
+#         return etf
 
-    @staticmethod
-    def stocks() -> pd.DataFrame:
-        etf = Wallet.etf()
-        bdr = Wallet.bdr()
-        fii = Wallet.fii()
-        etf_bdr_fii = pd.concat([etf, bdr, fii], ignore_index=bool)
-        return Wallet.asset[Wallet.asset.ticket.isin(etf_bdr_fii["ticket"]) == False]
+#     @staticmethod
+#     def stocks() -> pd.DataFrame:
+#         etf = Wallet.etf()
+#         bdr = Wallet.bdr()
+#         fii = Wallet.fii()
+#         etf_bdr_fii = pd.concat([etf, bdr, fii], ignore_index=bool)
+#         return Wallet.asset[Wallet.asset.ticket.isin(etf_bdr_fii["ticket"]) == False]
 
 
 def calc(last_value: float, first_value: float) -> float:
     return round(float(last_value / first_value - 1) * 100, 2)
 
 
-def earnings(ticket: str) -> Dict[str, int]:
-    df = pd.read_sql_query(f"SELECT  * FROM `{ticket}`", con=engine, index_col="Date")
-    df.index = pd.to_datetime(df.index)
+def earnings(df: pd.DataFrame) -> Dict[str, int]:
     day = float(df.tail(1)["Close"])
     return {
         "day": f"{round(day, 2):,}",
@@ -72,7 +70,8 @@ def stock(ticket: str, is_update: bool = False) -> pd.DataFrame:
         df.index = pd.to_datetime(df.index)
         return df
     except:
-        stock(ticket, is_update= True)
+        df = stock(ticket, is_update= True)
+        return df
 
 
 def ind(is_update: bool = False) -> pd.DataFrame:
@@ -85,7 +84,8 @@ def ind(is_update: bool = False) -> pd.DataFrame:
         df.index = pd.to_datetime(df.index)
         return df
     except:
-        ind(is_update=True)
+        df = ind(is_update=True)
+        return df
 
 
 def sp500(is_update: bool = False) -> pd.DataFrame:
@@ -98,8 +98,8 @@ def sp500(is_update: bool = False) -> pd.DataFrame:
         df.index = pd.to_datetime(df.index)
         return df
     except :
-        sp500(is_update=True)
-
+        df = sp500(is_update=True)
+        return df
 
 def ifix(is_update: bool = False) -> pd.DataFrame:
     if is_update:
@@ -114,7 +114,8 @@ def ifix(is_update: bool = False) -> pd.DataFrame:
         df.index = pd.to_datetime(df.index)
         return df
     except:
-        ifix(is_update=True)
+        df = ifix(is_update=True)
+        return df
 
 def wdo(is_update: bool = False) -> pd.DataFrame:
     if is_update:
@@ -130,7 +131,8 @@ def wdo(is_update: bool = False) -> pd.DataFrame:
         df.index = pd.to_datetime(df.index)
         return df
     except:
-        wdo(is_update=True)
+        df= wdo(is_update=True)
+        return df
 
 if __name__ == "__main__":
     print(ind())

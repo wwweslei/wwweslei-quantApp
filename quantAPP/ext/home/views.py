@@ -8,17 +8,17 @@ from quantAPP.ext.profit import profit
 home_blueprint = Blueprint('home', __name__)
 
 
-fii = profit.Wallet.fii()
-stocks = profit.Wallet.stocks()
-bdr = profit.Wallet.bdr()
-etf = profit.Wallet.etf()
+# fii = profit.Wallet.fii()
+# stocks = profit.Wallet.stocks()
+# bdr = profit.Wallet.bdr()
+# etf = profit.Wallet.etf()
 
-wallet = {
-    'FII': fii['total'].astype(float).sum(),
-    'BDR': bdr['total'].astype(float).sum(),
-    'ETF': etf['total'].astype(float).sum(),
-    'AÇÕES': stocks['total'].astype(float).sum(),
-}
+# wallet = {
+#     'FII': fii['total'].astype(float).sum(),
+#     'BDR': bdr['total'].astype(float).sum(),
+#     'ETF': etf['total'].astype(float).sum(),
+#     'AÇÕES': stocks['total'].astype(float).sum(),
+# }
 
 
 def create_dictionary(df):
@@ -47,15 +47,15 @@ def homepage(update=False):
     return render_template(
         'home/index.html',
         title='Dashboard',
-        ibov=profit.earnings("IND"),
-        sp500=profit.earnings("SP500"),
-        dol=profit.earnings("WDO"),
-        ifix=profit.earnings("IFIX"),
-        stocks=stocks[['name', 'total']],
-        fii=fii[['name', 'total']],
-        bdr=bdr[['name', 'total']],
-        etf=etf[['name', 'total']],
-        wallet=wallet,
+        ibov=profit.earnings(profit.ind()),
+        sp500=profit.earnings(profit.sp500()),
+        dol=profit.earnings(profit.wdo()),
+        ifix=profit.earnings(profit.ifix()),
+        # stocks=stocks[['name', 'total']],
+        # fii=fii[['name', 'total']],
+        # bdr=bdr[['name', 'total']],
+        # etf=etf[['name', 'total']],
+        # wallet=wallet,
         ind=create_dictionary(profit.ind()),
         sp=create_dictionary(profit.sp500()),
         wdo=create_dictionary(profit.wdo()),
