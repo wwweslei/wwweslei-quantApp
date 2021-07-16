@@ -1,21 +1,23 @@
-from flask_login import login_required
+from flask_login import login_required, current_user
 from flask import render_template
-from flask import render_template
-from flask_login import login_required
 from flask import Blueprint
 import io
 from base64 import b64encode
 from flask import Blueprint, render_template
 from flask import current_app as app
-import yfinance as yf
 import matplotlib.pyplot as plt
+from quantAPP.ext.profit.profit import stock
+from quantAPP.ext.db.models import User
 
 
+print(current_user)
+for x in User.query.first().wallets.all():
+    print(x.ticket)
 dashboard_blueprint = Blueprint('dashboard_blueprint', __name__)
 
 
 def plot():
-    df = yf.download("petr4.sa")['Close']
+    df = stock("ciel3")['Close']
     plt.figure()
     df.plot()
     buf = io.BytesIO()
@@ -32,7 +34,7 @@ def dashboard():
     return render_template(
         'dashboard/dashboard.html',
         title="Dashboard",
-        sunalt=plot()
+        sunalt=plot(),
     )
 
 

@@ -1,6 +1,6 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from quantAPP import login_manager
+from quantAPP.ext.auth.login import login_manager
 from quantAPP.ext.db import db
 
 
@@ -49,4 +49,4 @@ class Wallet(db.Model):
     users_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     def __repr__(self):
-        return f"<UserWallet {self.username}>"
+        return f"<UserWallet {self.ticket}>"
