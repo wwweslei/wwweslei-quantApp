@@ -20,17 +20,13 @@ def register():
 
         db.session.add(user)
         db.session.commit()
-        flash('You have successfully registered! You may now login.')
+        flash('Você se registrou com sucesso! Agora você pode fazer o login.')
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form, title='Register')
 
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
-    """
-    Handle requests to the /login route
-    Log an user in through the login form
-    """
     form = LoginForm()
     if form.validate_on_submit():
 
@@ -39,11 +35,10 @@ def login():
                 form.password.data):
             login_user(user)
 
-            # return redirect(url_for('home.dashboard'))
             return redirect(url_for('dashboard_blueprint.dashboard'))
 
         else:
-            flash('Invalid email or password.')
+            flash('E-mail ou senha inválidos.')
 
     return render_template('auth/login.html', form=form, title='Login')
 
@@ -51,11 +46,7 @@ def login():
 @auth.route('/logout')
 @login_required
 def logout():
-    """
-    Handle requests to the /logout route
-    Log an user out through the logout link
-    """
     logout_user()
-    flash('You have successfully been logged out.')
+    flash('Você foi deslogado com sucesso.')
 
     return redirect(url_for('auth.login'))

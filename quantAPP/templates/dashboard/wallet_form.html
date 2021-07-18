@@ -1,0 +1,18 @@
+{% import "bootstrap/utils.html" as utils %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "components/base.html" %}
+
+{% block page_body %}
+<div class="content-section">
+
+    {{ utils.flashed_messages() }}
+    <br />
+    <div class="center form-login">
+        <h2>  Adicionar Posição</h2>
+        <br/>
+        {{ wtf.quick_form(form) }}
+    </div>
+</div>
+<br><br><br><br><br><br><br><br><br><br>
+<br><br>
+{% endblock %}

@@ -1,18 +1,13 @@
 from flask_login import login_required, current_user
-from flask import render_template
-from flask import Blueprint
-import io
-from base64 import b64encode
-from flask import Blueprint, render_template
-from flask import current_app as app
-import matplotlib.pyplot as plt
+from flask import Blueprint, render_template, flash, redirect, url_for
 from quantAPP.ext.profit.profit import stock
-from quantAPP.ext.db.models import User
+import matplotlib.pyplot as plt
+from base64 import b64encode
+import io
+from .forms import WalletForm
+from quantAPP.ext.db import db
+from quantAPP.ext.db.models import Wallet
 
-
-print(current_user)
-for x in User.query.first().wallets.all():
-    print(x.ticket)
 dashboard_blueprint = Blueprint('dashboard_blueprint', __name__)
 
 
@@ -25,12 +20,15 @@ def plot():
     buf.seek(0)
     buffer = b''.join(buf)
     b2 = b64encode(buffer).decode('utf-8')
+    # print(current_user.wallets.all())
     return b2
 
 
 @dashboard_blueprint.route('/dashboard')
 @login_required
 def dashboard():
+    print(current_user)
+    print(current_user.get_id())
     return render_template(
         'dashboard/dashboard.html',
         title="Dashboard",
@@ -38,5 +36,21 @@ def dashboard():
     )
 
 
-
-
+@dashboard_blueprint.route('/dashboard/add_position', methods=['GET', 'POST'])
+@login_required
+def add_position():
+    form = WalletForm()
+    if form.validate_on_submit():
+        position = Wallet(ticket = form.ticket.data,
+                    kind = form.kind.data,
+                    date = form.date.data,
+                    amount = form.amount.data,
+                    price = form.price.data,
+                    commission = form.commission.data,
+                    users_id = current_user.get_id())
+        db.session.add(position)
+        db.session.commit()
+        flash('Posição adicionada com sucesso!')
+        return redirect(url_for('dashboard_blueprint.dashboard'))
+        
+    return render_template('dashboard/wallet_form.html', form=form, title='Adicionar Posição')
