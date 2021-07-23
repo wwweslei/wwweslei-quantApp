@@ -554,3 +554,4 @@ quantAPP/data*
 quantAPP/ext/profit/resevado.py
 quantAPP/ext/profit/Untitled-1.ipynb
 migrations/
+quantAPP/ext/db/sqlite.sql

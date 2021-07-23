@@ -42,6 +42,7 @@ class Wallet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ticket = db.Column(db.String(10), nullable=False)
     kind = db.Column(db.String(10), nullable=False)
+    condition = db.Column(db.String(10), default="Open")
     date = db.Column(db.DateTime)
     amount = db.Column(db.Integer)
     price = db.Column(db.Float)
@@ -50,3 +51,18 @@ class Wallet(db.Model):
 
     def __repr__(self):
         return f"<UserWallet {self.ticket}>"
+
+
+class Company(db.Model):
+    __tablename__ = "companies"
+    company = db.Column(db.String(), primary_key=True)
+    ticket1 = db.Column(db.String())
+    ticket2 = db.Column(db.String())
+    ticket3 = db.Column(db.String())
+    ticket4 = db.Column(db.String())
+    ticket5 = db.Column(db.String())
+    ticket6 = db.Column(db.String())
+    setor = db.Column(db.String())
+
+def __repr__(self):
+    return f"<UserWallet {self.ticket}>"

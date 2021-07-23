@@ -1,5 +1,4 @@
 from datetime import date
-import sqlite3
 from quantAPP.config import Config
 from sqlalchemy import create_engine
 import pandas_datareader.data as web
@@ -134,5 +133,19 @@ def wdo(is_update: bool = False) -> pd.DataFrame:
         df= wdo(is_update=True)
         return df
 
+def info(ticket: str, is_update: bool = False) -> pd.DataFrame:
+    ticket = ticket.lower()
+    if is_update:
+        df = yf.Ticker(ticket+".sa").info
+        df = pd.DataFrame.from_dict(df, orient='index', columns=['Value'])
+        df = df.loc[["sector", "shortName", "longName", "website", "logo_url", "symbol", "longBusinessSummary"]]
+        df.T.to_sql(ticket+"_info", con=engine, if_exists="replace")
+        return df
+    try:
+        return pd.read_sql(f"SELECT * FROM {ticket}_info", con=engine)
+    except:
+        df = info(ticket, is_update=True)
+        return df
+
 if __name__ == "__main__":
-    print(ind())
+    print(info("mglu3"))

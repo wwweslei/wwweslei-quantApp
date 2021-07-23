@@ -1,21 +1,58 @@
 {% import "bootstrap/utils.html" as utils %}
 {% extends "components/base.html" %}
 {% block page_body %}
-<table>
-    {{ utils.flashed_messages() }}
 
-    <h1>Portfolio</h1>
-    {% if sunalt != None %}
+{{ utils.flashed_messages() }}
+<h1>Dashboard</h1>
+<br>
 
-    <img src="data:image/png;base64,{{ sunalt }}">
-    {% endif %}
-
-        <h1>{{investors}}</h1>
-        {% for i in wall%}
-        <h1>{{i}}</h1>
+<table class="table table-hover">
+    <thead class="thead-light">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Ticket</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Quantidade</th>
+            <th scope="col">Preço médio</th>
+            <th scope="col">Preço atual</th>
+            <th scope="col">Valor de mercado</th>
+            <th scope="col">P/L</th>
+            <th scope="col">%P/L</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for stock in wallet_user%}
+        <tr>
+            <th scope="row">{{loop.index}}</th>
+            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{stock.ticket}}">{{stock.ticket}}</a></td>
+            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{stock.ticket}}">{{stock.ticket}}</a></td>
+            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{stock.ticket}}">{{stock.kind}}</a></td>
+            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{stock.ticket}}">{{stock.amount}}</a></td>
+            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{stock.ticket}}">{{"${:,.2f}".format(stock.price)}}</a></td>
+            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{stock.ticket}}">{{"${:,.2f}".format(stock.price)}}</a></td>
+            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{stock.ticket}}">{{"${:,.2f}".format(stock.amount * stock.price)}}</a></td>
+            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{stock.ticket}}">{{stock.ticket}}</a></td>
+            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{stock.ticket}}">{{stock.ticket}}</a></td>
+        </tr>
         {% endfor %}
-
-
-    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    </tbody>
 </table>
+
+
+
+
+<div class="col">
+    <a type="button" class="btn btn-info  float-right" href="{{url_for('dashboard_blueprint.add_position')}}">
+        <span>Add Posição</span>
+    </a>
+</div>
+
+
+<br>
+{% if sunalt != None %}
+<img src="data:image/png;base64,{{ sunalt }}">
+{% endif %}
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
 {% endblock %}
