@@ -9,8 +9,7 @@ import pandas as pd
 
 config = Config()
 path = r"C:\Users\wwwes\Documents\wwweslei-quantApp\quantAPP\ext\profit\company_files"
-engine = create_engine(config.SQLALCHEMY_DATABASE_URI,
-                       echo=config.SQLALCHEMY_ECHO)
+engine = create_engine(config.SQLALCHEMY_DATABASE_URI, echo=config.SQLALCHEMY_ECHO)
 
 
 # class Wallet:
@@ -51,17 +50,24 @@ def earnings(df: pd.DataFrame) -> Dict[str, int]:
     return {
         "day": f"{round(day, 2):,}",
         "daily": calc(day, df.tail(2).iloc[0]["Close"]),
-        "weekly": calc(day, df.groupby(pd.Grouper(freq='w')).last()[-2:-1]['Close']),
-        "monthly": calc(day, df.groupby(pd.Grouper(freq='M')).last()[-2:-1]['Close']),
-        "twelve_months": calc(day, df.groupby(pd.Grouper(freq='M')).last()[-13:-12]['Close']),
-        "annual": calc(day, df.groupby(pd.Grouper(freq='M')).last()[-(date.today().month+1):]['Close'].head(1))
+        "weekly": calc(day, df.groupby(pd.Grouper(freq="w")).last()[-2:-1]["Close"]),
+        "monthly": calc(day, df.groupby(pd.Grouper(freq="M")).last()[-2:-1]["Close"]),
+        "twelve_months": calc(
+            day, df.groupby(pd.Grouper(freq="M")).last()[-13:-12]["Close"]
+        ),
+        "annual": calc(
+            day,
+            df.groupby(pd.Grouper(freq="M"))
+            .last()[-(date.today().month + 1) :]["Close"]
+            .head(1),
+        ),
     }
 
 
 def stock(ticket: str, is_update: bool = False) -> pd.DataFrame:
     ticket = ticket.upper()
     if is_update:
-        df = yf.download(ticket+".SA")
+        df = yf.download(ticket + ".SA")
         df.to_sql(ticket.removesuffix(".SA"), con=engine, if_exists="replace")
         return df
     try:
@@ -69,7 +75,7 @@ def stock(ticket: str, is_update: bool = False) -> pd.DataFrame:
         df.index = pd.to_datetime(df.index)
         return df
     except:
-        df = stock(ticket, is_update= True)
+        df = stock(ticket, is_update=True)
         return df
 
 
@@ -93,12 +99,17 @@ def sp500(is_update: bool = False) -> pd.DataFrame:
         df.to_sql("SP500", con=engine, if_exists="replace")
         return df
     try:
-        df = pd.read_sql("SELECT * FROM SP500", con=engine, index_col="Date",)
+        df = pd.read_sql(
+            "SELECT * FROM SP500",
+            con=engine,
+            index_col="Date",
+        )
         df.index = pd.to_datetime(df.index)
         return df
-    except :
+    except:
         df = sp500(is_update=True)
         return df
+
 
 def ifix(is_update: bool = False) -> pd.DataFrame:
     if is_update:
@@ -116,36 +127,71 @@ def ifix(is_update: bool = False) -> pd.DataFrame:
         df = ifix(is_update=True)
         return df
 
+
 def wdo(is_update: bool = False) -> pd.DataFrame:
     if is_update:
-        df = web.DataReader("usd/brl", "av-forex-daily",
-                            api_key=config.API_KEY)
+        df = web.DataReader("usd/brl", "av-forex-daily", api_key=config.API_KEY)
         df.index = pd.to_datetime(df.index)
         df.columns = ["Open", "High", "Low", "Close"]
         df.index.names = ["Date"]
         df.to_sql("WDO", con=engine, if_exists="replace")
         return df
-    try:    
+    try:
         df = pd.read_sql("SELECT * FROM WDO", con=engine, index_col="Date")
         df.index = pd.to_datetime(df.index)
         return df
     except:
-        df= wdo(is_update=True)
+        df = wdo(is_update=True)
         return df
+
 
 def info(ticket: str, is_update: bool = False) -> pd.DataFrame:
     ticket = ticket.lower()
     if is_update:
-        df = yf.Ticker(ticket+".sa").info
-        df = pd.DataFrame.from_dict(df, orient='index', columns=['Value'])
-        df = df.loc[["sector", "shortName", "longName", "website", "logo_url", "symbol", "longBusinessSummary"]]
-        df.T.to_sql(ticket+"_info", con=engine, if_exists="replace")
-        return df
+        df = yf.Ticker(ticket + ".sa").info
+        df = pd.DataFrame.from_dict(df, orient="index", columns=["Value"])
+        df = df.loc[
+            [
+                "sector",
+                "shortName",
+                "longName",
+                "logo_url",
+                "symbol",
+                "ebitda",
+                "targetLowPrice",
+                "recommendationKey",
+                "targetMedianPrice",
+                "currentPrice",
+                "earningsGrowth",
+                "totalCash",
+                "totalDebt",
+                "totalRevenue",
+                "recommendationMean",
+                "exchange",
+                "yield",
+                "beta",
+                "ytdReturn",
+                "category",
+                "previousClose",
+                "open",
+                "dividendRate",
+                "exDividendDate",
+                "marketCap",
+                "volume",
+                "dividendYield",
+                "bidSize",
+                "dayHigh",
+            ]
+        ]
+        df.T.to_sql(ticket + "_info", con=engine, if_exists="replace")
+        return df.T
     try:
         return pd.read_sql(f"SELECT * FROM {ticket}_info", con=engine)
     except:
         df = info(ticket, is_update=True)
-        return df
+        return df.T
+
 
 if __name__ == "__main__":
-    print(info("mglu3"))
+    d = info("rect11")
+    print(d.sector.values)

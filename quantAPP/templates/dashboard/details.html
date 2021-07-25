@@ -3,16 +3,18 @@
 {% block page_body %}
 <div class="content-section">
     <div class="datails">
-        <h1>{{ticket}}  {{stock.shortName}} </h1>
+        <h1>{{stock.shortName.to_string(index=False)}} </h1>
+        <br>
+        <h1>{{ticket|upper}}</h1>
         <figure>
-            <img src="{{stock.logo_url}}" alt="Minha Figura">
-            <figcaption>Informações</figcaption>
+            <img src="{{stock.logo_url.to_string(index=False)}}" alt="">
         </figure>
-        <h3>{{stock.sector}}</h3>
-        <h3>{{stock.website}}</h3>
-        <h3>{{stock.sector}}</h3>
-        <h3>{{stock.sector}}</h3>
+        <h3>{{stock.sector.to_string(index=False)}}</h3>
         </div>
+
+        {% if graphic != None %}
+        <img src="data:image/png;base64,{{ graphic }}">
+        {% endif %}
 </div>
 <br><br><br><br><br><br><br><br><br><br>
 <br><br>

@@ -22,18 +22,18 @@
         </tr>
     </thead>
     <tbody>
-        {% for stock in wallet_user%}
+        {% for wallet, stock_value in zip(wallet_user, stock_user)%}
         <tr>
             <th scope="row">{{loop.index}}</th>
-            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{stock.ticket}}">{{stock.ticket}}</a></td>
-            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{stock.ticket}}">{{stock.ticket}}</a></td>
-            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{stock.ticket}}">{{stock.kind}}</a></td>
-            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{stock.ticket}}">{{stock.amount}}</a></td>
-            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{stock.ticket}}">{{"${:,.2f}".format(stock.price)}}</a></td>
-            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{stock.ticket}}">{{"${:,.2f}".format(stock.price)}}</a></td>
-            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{stock.ticket}}">{{"${:,.2f}".format(stock.amount * stock.price)}}</a></td>
-            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{stock.ticket}}">{{stock.ticket}}</a></td>
-            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{stock.ticket}}">{{stock.ticket}}</a></td>
+            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{wallet.ticket}}">{{info(wallet.ticket).shortName.to_string(index=False)}}</a></td>
+            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{wallet.ticket}}">{{wallet.ticket|upper}}</a></td>
+            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{wallet.ticket}}">{{wallet.kind}}</a></td>
+            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{wallet.ticket}}">{{wallet.amount}}</a></td>
+            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{wallet.ticket}}">{{"R$ {:,.2f}".format(wallet.price)}}</a></td>
+            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{wallet.ticket}}">{{"R$ {:,.2f}".format(stock_value)}}</a></td>
+            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{wallet.ticket}}">{{"R$ {:,.2f}".format(wallet.amount * stock_value)}}</a></td>
+            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{wallet.ticket}}">{{"R$ {:,.2f}".format((wallet.amount * stock_value)-(wallet.price*wallet.amount))}}</a></td>
+            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{wallet.ticket}}">{{"{:,.2f}%".format(((wallet.amount * stock_value)/(wallet.price*wallet.amount)-1)*100)}}</a></td>
         </tr>
         {% endfor %}
     </tbody>
@@ -50,9 +50,6 @@
 
 
 <br>
-{% if sunalt != None %}
-<img src="data:image/png;base64,{{ sunalt }}">
-{% endif %}
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 {% endblock %}

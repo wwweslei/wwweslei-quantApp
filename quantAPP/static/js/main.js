@@ -16,7 +16,7 @@ for (let i = 0; i < update.length; i++) {
 let value = document.querySelectorAll('.small-box h4');
 let div = document.querySelectorAll('.small-box');
 for (let i = 0; i < value.length; i++) {
-    console.log(value[i].innerHTML.slice(0, -1));
+    // console.log(value[i].innerHTML.slice(0, -1));
     if (value[i].innerHTML.slice(0, -1) <= -1){
         div[i].classList.remove('bg-info');
         div[i].classList.remove('bg-success');
@@ -43,5 +43,5 @@ for (let i = 0; i < value.length; i++) {
         div[i].classList.remove('bg-warning');
         div[i].classList.add('bg-success');
     };
-    console.log(value[i]);
+    // console.log(value[i]);
 }

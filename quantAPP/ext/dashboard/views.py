@@ -6,49 +6,78 @@ from quantAPP.ext.db import db
 from .forms import WalletForm
 import matplotlib.pyplot as plt
 from base64 import b64encode
-import yfinance as yf
 import io
 
-dashboard_blueprint = Blueprint('dashboard_blueprint', __name__)
+dashboard_blueprint = Blueprint("dashboard_blueprint", __name__)
 
 
-def plot():
-    df = stock("ciel3")['Close']
+def query_table():
+    stmt = f"""
+        SELECT 
+            id,
+            ticket,
+            kind,
+            condition,
+            date,
+            sum(w.amount) as amount,
+            sum(w.price)/COUNT(w.ticket) as price,
+            sum(w.commission) as commission,
+            users_id
+        from wallets w
+            where w.users_id == {current_user.id}
+            and w.condition == 'Open'
+        group by w.ticket
+    """
+    query = [{column: value for column, value in rowproxy.items()}
+            for rowproxy in db.session.execute(stmt).fetchall()]
+    return query
+
+def plot(ticket):
+    df = stock(ticket)["Close"]
     plt.figure()
     df.plot()
     buf = io.BytesIO()
-    plt.savefig(buf, format='png')
+    plt.savefig(buf, format="png")
     buf.seek(0)
-    buffer = b''.join(buf)
-    b2 = b64encode(buffer).decode('utf-8')
-    return b2
+    buffer = b"".join(buf)
+    graphic = b64encode(buffer).decode("utf-8")
+    return graphic
 
 
-@dashboard_blueprint.route('/dashboard/', methods=['GET', 'POST'])
-@dashboard_blueprint.route('/dashboard/<ticket>', methods=['GET', 'POST'])
+def query_stock():
+    wallet = current_user.wallets.filter(
+        Wallet.condition == "Open").group_by("ticket").all()
+    query = [round(float(stock(value.ticket).tail(1)['Close']), 2) for value in wallet]
+    return query
+
+
+@dashboard_blueprint.route("/dashboard/", methods=["GET", "POST"])
+@dashboard_blueprint.route("/dashboard/<ticket>", methods=["GET", "POST"])
 @login_required
 def dashboard(ticket=None):
-    if ticket:  
-        stock = yf.Ticker(ticket+'.sa')
+    query_stock()
+    if ticket:
         return render_template(
-            'dashboard/details.html',
-            title='Detalhe',
+            "dashboard/details.html",
+            title="Detalhe",
             id=id,
-            ticket= ticket,
-            stock = stock.info
+            ticket=ticket,
+            stock=info(ticket),
+            graphic=plot(ticket),
         )
     else:
-        wallet_user = current_user.wallets.all()
         return render_template(
-            'dashboard/dashboard.html',
+            "dashboard/dashboard.html",
             title="Dashboard",
-            sunalt=plot(),
-            wallet_user=wallet_user
-    
+            wallet_user=query_table(),
+            stock_user=query_stock(),
+            info=info,
+            zip=zip
         )
 
 
-@dashboard_blueprint.route('/dashboard/add_position', methods=['GET', 'POST'])
+
+@dashboard_blueprint.route("/dashboard/add_position", methods=["GET", "POST"])
 @login_required
 def add_position():
     form = WalletForm()
@@ -60,17 +89,16 @@ def add_position():
             amount=form.amount.data,
             price=form.price.data,
             commission=form.commission.data,
-            users_id=current_user.get_id()
+            users_id=current_user.get_id(),
         )
         db.session.add(position)
         db.session.commit()
-        flash('Posição adicionada com sucesso!')
+        flash("Posição adicionada com sucesso!")
         info(form.ticket.data)
-        return redirect(url_for('dashboard_blueprint.dashboard'))
+        return redirect(url_for("dashboard_blueprint.dashboard"))
 
     return render_template(
-        'dashboard/wallet_form.html',
+        "dashboard/wallet_form.html",
         form=form,
-        title='Adicionar Posição',
-        )
-
+        title="Adicionar Posição",
+    )

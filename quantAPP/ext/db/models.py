@@ -65,4 +65,4 @@ class Company(db.Model):
     setor = db.Column(db.String())
 
 def __repr__(self):
-    return f"<UserWallet {self.ticket}>"
+    return f"<Company {self.company}>"
