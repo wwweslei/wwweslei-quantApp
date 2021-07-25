@@ -31,7 +31,6 @@ class User(UserMixin, db.Model):
         return f'<User: {self.username}>'
 
 
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -46,7 +45,7 @@ class Wallet(db.Model):
     date = db.Column(db.DateTime)
     amount = db.Column(db.Integer)
     price = db.Column(db.Float)
-    commission = db.Column(db.Float)
+    classe = db.Column(db.String(10), nullable=False, default=['bdr', 'etf', 'fii', 'stock'])
     users_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     def __repr__(self):
@@ -63,6 +62,7 @@ class Company(db.Model):
     ticket5 = db.Column(db.String())
     ticket6 = db.Column(db.String())
     setor = db.Column(db.String())
+
 
 def __repr__(self):
     return f"<Company {self.company}>"

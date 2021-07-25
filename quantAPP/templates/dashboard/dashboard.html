@@ -1,11 +1,29 @@
 {% import "bootstrap/utils.html" as utils %}
 {% extends "components/base.html" %}
 {% block page_body %}
-
+{% include 'components/pie_charts.html' %}
 {{ utils.flashed_messages() }}
 <h1>Dashboard</h1>
-<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm">
+                <div id="donutchart"></div>
+            </div>
+            <div class="col-sm">
+                <div id="donutchart3"></div>
+            </div>
+            <div class="col-sm">
+                <div id="donutchart4"></div>
+            </div>
 
+            <div class="col-sm">
+                <div id="donutchart2"></div>
+            </div>
+        </div>
+    </div>
+</section>
+<br>
 <table class="table table-hover">
     <thead class="thead-light">
         <tr>
@@ -22,10 +40,10 @@
         </tr>
     </thead>
     <tbody>
-        {% for wallet, stock_value in zip(wallet_user, stock_user)%}
+        {% for wallet, info, stock_value in zip(wallet_user[0], wallet_user[1], wallet_user[2])%}
         <tr>
             <th scope="row">{{loop.index}}</th>
-            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{wallet.ticket}}">{{info(wallet.ticket).shortName.to_string(index=False)}}</a></td>
+            <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{wallet.ticket}}">{{info.shortName}}</a></td>
             <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{wallet.ticket}}">{{wallet.ticket|upper}}</a></td>
             <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{wallet.ticket}}">{{wallet.kind}}</a></td>
             <td><a href="{{url_for('dashboard_blueprint.dashboard')}}{{wallet.ticket}}">{{wallet.amount}}</a></td>
@@ -39,17 +57,25 @@
     </tbody>
 </table>
 
-
-
-
 <div class="col">
     <a type="button" class="btn btn-info  float-right" href="{{url_for('dashboard_blueprint.add_position')}}">
         <span>Add Posição</span>
     </a>
 </div>
-
-
 <br>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br>
+<br>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm">
+                <div id="donutchart5"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<br><br><br><br><br>
 
 {% endblock %}

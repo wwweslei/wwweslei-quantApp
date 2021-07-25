@@ -4,58 +4,41 @@ import pandas as pd
 from quantAPP.ext.profit import profit
 
 
-
-home_blueprint = Blueprint('home', __name__)
-
-
-# fii = profit.Wallet.fii()
-# stocks = profit.Wallet.stocks()
-# bdr = profit.Wallet.bdr()
-# etf = profit.Wallet.etf()
-
-# wallet = {
-#     'FII': fii['total'].astype(float).sum(),
-#     'BDR': bdr['total'].astype(float).sum(),
-#     'ETF': etf['total'].astype(float).sum(),
-#     'AÇÕES': stocks['total'].astype(float).sum(),
-# }
+home_blueprint = Blueprint("home", __name__)
 
 
 def create_dictionary(df):
-    df = df.groupby(pd.Grouper(freq='M')).last()[-13:]['Close']
-    data = {month: float(close/df.head(1)-1)
-            for (month, close) in zip(df.index.strftime('%m/%y'), df)}
+    df = df.groupby(pd.Grouper(freq="M")).last()[-13:]["Close"]
+    data = {
+        month: float(close / df.head(1) - 1)
+        for (month, close) in zip(df.index.strftime("%m/%y"), df)
+    }
     return data
 
 
-@home_blueprint.route('/<update>', methods=['GET'])
-@home_blueprint.route('/')
+@home_blueprint.route("/<update>", methods=["GET"])
+@home_blueprint.route("/")
 def homepage(update=False):
-    if(update == "ibov_update"):
+    if update == "ibov_update":
         profit.ind(is_update=True)
         pass
-    if(update == "sp500_update"):
+    if update == "sp500_update":
         profit.sp500(is_update=True)
         pass
-    if(update == "dol_update"):
+    if update == "dol_update":
         profit.wdo(is_update=True)
         pass
-    if(update == "ifix_update"):
+    if update == "ifix_update":
         profit.ifix(is_update=True)
         pass
 
     return render_template(
-        'home/index.html',
-        title='Dashboard',
+        "home/index.html",
+        title="Dashboard",
         ibov=profit.earnings(profit.ind()),
         sp500=profit.earnings(profit.sp500()),
         dol=profit.earnings(profit.wdo()),
         ifix=profit.earnings(profit.ifix()),
-        # stocks=stocks[['name', 'total']],
-        # fii=fii[['name', 'total']],
-        # bdr=bdr[['name', 'total']],
-        # etf=etf[['name', 'total']],
-        # wallet=wallet,
         ind=create_dictionary(profit.ind()),
         sp=create_dictionary(profit.sp500()),
         wdo=create_dictionary(profit.wdo()),
@@ -65,4 +48,4 @@ def homepage(update=False):
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('home/404.html'), 404
+    return render_template("home/404.html"), 404

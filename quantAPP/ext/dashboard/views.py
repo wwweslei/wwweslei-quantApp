@@ -11,51 +11,10 @@ import io
 dashboard_blueprint = Blueprint("dashboard_blueprint", __name__)
 
 
-def query_table():
-    stmt = f"""
-        SELECT 
-            id,
-            ticket,
-            kind,
-            condition,
-            date,
-            sum(w.amount) as amount,
-            sum(w.price)/COUNT(w.ticket) as price,
-            sum(w.commission) as commission,
-            users_id
-        from wallets w
-            where w.users_id == {current_user.id}
-            and w.condition == 'Open'
-        group by w.ticket
-    """
-    query = [{column: value for column, value in rowproxy.items()}
-            for rowproxy in db.session.execute(stmt).fetchall()]
-    return query
-
-def plot(ticket):
-    df = stock(ticket)["Close"]
-    plt.figure()
-    df.plot()
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png")
-    buf.seek(0)
-    buffer = b"".join(buf)
-    graphic = b64encode(buffer).decode("utf-8")
-    return graphic
-
-
-def query_stock():
-    wallet = current_user.wallets.filter(
-        Wallet.condition == "Open").group_by("ticket").all()
-    query = [round(float(stock(value.ticket).tail(1)['Close']), 2) for value in wallet]
-    return query
-
-
 @dashboard_blueprint.route("/dashboard/", methods=["GET", "POST"])
 @dashboard_blueprint.route("/dashboard/<ticket>", methods=["GET", "POST"])
 @login_required
 def dashboard(ticket=None):
-    query_stock()
     if ticket:
         return render_template(
             "dashboard/details.html",
@@ -70,11 +29,9 @@ def dashboard(ticket=None):
             "dashboard/dashboard.html",
             title="Dashboard",
             wallet_user=query_table(),
-            stock_user=query_stock(),
-            info=info,
-            zip=zip
+            zip=zip,
+            wallet=query_wallet_distribution(),
         )
-
 
 
 @dashboard_blueprint.route("/dashboard/add_position", methods=["GET", "POST"])
@@ -88,7 +45,7 @@ def add_position():
             date=form.date.data,
             amount=form.amount.data,
             price=form.price.data,
-            commission=form.commission.data,
+            classe=form.classe.data,
             users_id=current_user.get_id(),
         )
         db.session.add(position)
@@ -102,3 +59,59 @@ def add_position():
         form=form,
         title="Adicionar Posição",
     )
+
+
+def plot(ticket):
+    df = stock(ticket)["Close"]
+    plt.figure()
+    df.plot()
+    buf = io.BytesIO()
+    plt.savefig(buf, format="png")
+    buf.seek(0)
+    buffer = b"".join(buf)
+    graphic = b64encode(buffer).decode("utf-8")
+    return graphic
+
+
+def query_table():
+    stmt = f"""
+        SELECT 
+            id,
+            ticket,
+            kind,
+            condition,
+            date,
+            sum(w.amount) as amount,
+            sum(w.price)/COUNT(w.ticket) as price,
+            classe,
+            users_id
+        from wallets w
+            where w.users_id == {current_user.id}
+            and w.condition == 'Open'
+        group by w.ticket
+    """
+    query = [
+        {column: value for column, value in rowproxy.items()}
+        for rowproxy in db.session.execute(stmt).fetchall()
+    ]
+
+    query_info = [info(stock["ticket"]).to_dict("records")[0] for stock in query]
+
+    query_stock_value = [
+        round(float(stock(ticket["ticket"]).tail(1)["Close"]), 2) for ticket in query
+    ]
+
+    return query, query_info, query_stock_value
+
+
+def query_wallet_distribution():
+    wallet = {
+        "FII": 0,
+        "BDR": 0,
+        "ETF": 0,
+        "AÇÃO": 0,
+    }
+    table = query_table()
+    for stock_value, classe in zip(table[2], table[0]):
+        wallet[classe["classe"]] += classe["amount"] * stock_value
+    return wallet
