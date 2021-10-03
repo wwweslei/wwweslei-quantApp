@@ -1,21 +1,86 @@
 {% extends "components/base.html" %}
-
 {% block page_body %}
+
 <div class="content-section">
-    <div class="datails">
+    <div class="datails ml-4">
         <h1>{{stock.shortName.to_string(index=False)}} </h1>
-        <br>
-        <h1>{{ticket|upper}}</h1>
+    </div>
+
+    <div class="text-right mr-5">
         <figure>
             <img src="{{stock.logo_url.to_string(index=False)}}" alt="">
         </figure>
-        <h3>{{stock.sector.to_string(index=False)}}</h3>
-        </div>
+    </div>
+    
+    <br>
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <th scope="row">Ticket </th>
+                <td>{{ticket|upper}}</td>
 
-        {% if graphic != None %}
-        <img src="data:image/png;base64,{{ graphic }}">
-        {% endif %}
+            </tr>
+            <tr>
+                <th scope="row">Sector</th>
+                <td>{{stock.sector.to_string(index=False)}}</td>
+            </tr>
+            <tr>
+                <th scope="row">CurrentPrice</th>
+                <td>{{stock.currentPrice.to_string(index=False)}}</td>
+            </tr>
+            <tr>
+                <th scope="row">Ebitda</th>
+                <td>{{stock.ebitda.to_string(index=False)}}</td>
+            </tr>
+            <tr>
+                <th scope="row">Beta</th>
+                <td>{{stock.beta.to_string(index=False)}}</td>
+            </tr>
+            <tr>
+                <th scope="row">MarketCap</th>
+                <td>{{stock.marketCap.to_string(index=False)}}</td>
+            </tr>
+            <tr>
+                <th scope="row">TotalCash</th>
+                <td>{{stock.totalCash.to_string(index=False)}}</td>
+            </tr>
+            <tr>
+                <th scope="row">TotalDebt</th>
+                <td>{{stock.totalDebt.to_string(index=False)}}</td>
+            </tr>
+            <tr>
+                <th scope="row">Yield</th>
+                <td>{{stock.yield.to_string(index=False)}}</td>
+            </tr>
+            <tr>
+                <th scope="row">YtdReturn</th>
+                <td>{{stock.ytdReturn.to_string(index=False)}}</td>
+            </tr>
+            <tr>
+                <th scope="row">DividendYield</th>
+                <td>{{stock.dividendYield.to_string(index=False)}}</td>
+            </tr>
+            <tr>
+                <th scope="row">TotalDebt</th>
+                <td>{{stock.totalDebt.to_string(index=False)}}</td>
+            </tr>
+            <tr>
+                <th scope="row">Category</th>
+                <td>{{stock.category.to_string(index=False)}}</td>
+            </tr>
+            <tr>
+                <th scope="row">DividendRate</th>
+                <td>{{stock.dividendRate.to_string(index=False)}}</td>
+            </tr>
+            
+        </tbody>
+    </table>
+
 </div>
+
+{% if graphic != None %}
+<img src="data:image/png;base64,{{ graphic }}">
+{% endif %}
 <br><br><br><br><br><br><br><br><br><br>
 <br><br>
 {% endblock %}

@@ -10,7 +10,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="quantAPP",
-    version="0.1.0",
+    version="1.0.0",
     description="Financial asset management application.",
     long_description=long_description,
     long_description_content_type="text/markdown",
